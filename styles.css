@@ -1,16 +1,17 @@
 :root {
   color-scheme: light;
-  --bg: #f7f5ef;
-  --surface: #ffffff;
-  --surface-strong: #f0eadf;
-  --ink: #20242a;
-  --muted: #65717d;
-  --line: #ded8ce;
-  --primary: #28666e;
-  --primary-dark: #17494f;
-  --accent: #c75c41;
-  --success: #2f855a;
-  --shadow: 0 24px 70px rgba(37, 46, 58, 0.14);
+  --bg: #f3eddf;
+  --surface: #fffaf0;
+  --surface-strong: #e9ddc4;
+  --ink: #27301c;
+  --muted: #686650;
+  --line: #d8c8a9;
+  --primary: #46552a;
+  --primary-dark: #2f3b1a;
+  --accent: #c5aa72;
+  --accent-dark: #a4864e;
+  --success: #536b35;
+  --shadow: 0 24px 70px rgba(48, 55, 32, 0.16);
   font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
 
@@ -20,11 +21,14 @@
 
 html {
   scroll-behavior: smooth;
+  scroll-padding-top: 92px;
 }
 
 body {
   margin: 0;
-  background: var(--bg);
+  background:
+    radial-gradient(circle at 10% 0%, rgba(197, 170, 114, 0.22), transparent 32%),
+    linear-gradient(180deg, #f8f2e4 0%, var(--bg) 48%, #eee3cf 100%);
   color: var(--ink);
 }
 
@@ -35,11 +39,12 @@ a {
 
 .topbar {
   align-items: center;
-  background: rgba(247, 245, 239, 0.92);
+  background: rgba(248, 242, 228, 0.94);
   border-bottom: 1px solid var(--line);
   display: flex;
   justify-content: space-between;
-  padding: 16px clamp(20px, 4vw, 64px);
+  min-height: 76px;
+  padding: 10px clamp(20px, 4vw, 64px);
   position: sticky;
   top: 0;
   z-index: 10;
@@ -53,16 +58,11 @@ a {
   gap: 10px;
 }
 
-.brand-mark {
-  align-items: center;
-  background: var(--primary);
-  border-radius: 8px;
-  color: #fff;
-  display: inline-flex;
-  font-size: 13px;
-  height: 36px;
-  justify-content: center;
-  width: 36px;
+.brand-logo {
+  display: block;
+  height: 54px;
+  object-fit: contain;
+  width: auto;
 }
 
 .nav {
@@ -73,7 +73,7 @@ a {
 }
 
 .nav a:hover {
-  color: var(--ink);
+  color: var(--primary);
 }
 
 main {
@@ -243,6 +243,7 @@ h1 {
   gap: 24px;
   grid-template-columns: minmax(220px, 0.7fr) minmax(320px, 1.4fr) minmax(180px, 0.48fr);
   padding: 0 clamp(20px, 4vw, 64px) 58px;
+  scroll-margin-top: 104px;
 }
 
 .panel,
@@ -250,7 +251,7 @@ h1 {
   background: var(--surface);
   border: 1px solid var(--line);
   border-radius: 8px;
-  box-shadow: 0 16px 40px rgba(37, 46, 58, 0.08);
+  box-shadow: 0 16px 40px rgba(48, 55, 32, 0.09);
 }
 
 .panel {
@@ -309,7 +310,7 @@ h1 {
 }
 
 .status-pill {
-  background: #e6f0ec;
+  background: #e8eadc;
   border-radius: 999px;
   color: var(--success);
   font-size: 13px;
@@ -320,8 +321,8 @@ h1 {
 
 .dropzone {
   align-items: center;
-  background: #f7fbfa;
-  border: 2px dashed #98b8b6;
+  background: #fbf4e4;
+  border: 2px dashed #b8aa7a;
   border-radius: 8px;
   cursor: pointer;
   display: grid;
@@ -335,7 +336,7 @@ h1 {
 }
 
 .dropzone.dragging {
-  background: #edf8f6;
+  background: #f2ead4;
   border-color: var(--primary);
 }
 
@@ -380,7 +381,7 @@ h1 {
 
 .file-list li {
   align-items: center;
-  background: #faf8f3;
+  background: #fbf4e4;
   border: 1px solid var(--line);
   border-radius: 8px;
   display: grid;
@@ -443,9 +444,9 @@ h1 {
 
 .step {
   align-items: center;
-  background: var(--accent);
+  background: var(--primary);
   border-radius: 999px;
-  color: #fff;
+  color: #fffaf0;
   display: inline-flex;
   font-weight: 900;
   height: 34px;
@@ -493,7 +494,7 @@ h1 {
 }
 
 .article-card span {
-  color: var(--accent);
+  color: var(--accent-dark);
   font-size: 13px;
   font-weight: 900;
   text-transform: uppercase;
@@ -569,7 +570,7 @@ h1 {
 }
 
 .article-list a {
-  background: #faf8f3;
+  background: #fbf4e4;
   border: 1px solid var(--line);
   border-radius: 8px;
   color: var(--primary);
@@ -614,6 +615,11 @@ h1 {
   .topbar {
     align-items: flex-start;
     gap: 14px;
+  }
+
+  .brand-logo {
+    height: 46px;
+    max-width: 230px;
   }
 
   .nav {
