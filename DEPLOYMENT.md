@@ -1,72 +1,32 @@
-# Publicacao com baixo custo
+# Publicação
 
-## Recomendacao para o MVP
+O projeto tem duas partes, publicadas em lugares diferentes:
 
-Use um unico backend Docker no Render Free para testar o produto publicado.
+| Parte | Onde | Por quê |
+|---|---|---|
+| Páginas (HTML, CSS, JS) | GitHub Pages | grátis e rápido para arquivos estáticos |
+| API de conversão | Render (plano gratuito, Docker) | o Calibre precisa de um servidor com binários do sistema |
 
-Motivo: o conversor depende do Calibre, e o Calibre precisa rodar em um ambiente com binarios do sistema. Um site puramente estatico no Cloudflare Pages nao consegue executar `ebook-convert`.
+## 1. Front-end no GitHub Pages
 
-## Caminho 1: custo zero para validar
+Já configurado: em **Settings → Pages**, branch `master`, pasta `/ (root)`. Cada push na `master` publica em
+https://alex-m-silva.github.io/pdf-para-epub/.
 
-1. Criar conta no Render.
-2. Criar um Web Service a partir do repositorio.
-3. Usar deploy via Dockerfile.
-4. Configurar variaveis:
+Os links entre as páginas são relativos, porque o site fica na subpasta `/pdf-para-epub/`.
 
-```text
-MAX_UPLOAD_MB=50
-CONVERSION_TIMEOUT_SECONDS=180
-MAX_CONCURRENT_CONVERSIONS=1
-RATE_LIMIT_MAX_REQUESTS=30
-RATE_LIMIT_WINDOW_SECONDS=60
-TEMP_FILE_TTL_MINUTES=30
-SHOW_CONVERSION_ERRORS=0
-ALLOWED_HOSTS=seu-servico.onrender.com
-ALLOWED_ORIGINS=https://seu-servico.onrender.com
-```
+## 2. API no Render
 
-5. Testar:
+1. Entre em https://render.com com a conta do GitHub.
+2. **New → Blueprint** e escolha o repositório `pdf-para-epub`. O Render lê o [`render.yaml`](render.yaml) e cria o serviço `pdf-para-epub` com as variáveis de ambiente.
+3. Quando o deploy terminar, teste: `https://pdf-para-epub.onrender.com/api/health` deve responder `{"status":"ok"}`.
+4. Se o Render der outro endereço ao serviço (por exemplo, se o nome já estiver em uso), troque a URL em [`config.js`](config.js) e faça push.
 
-```text
-https://seu-servico.onrender.com/api/version
-https://seu-servico.onrender.com/privacy.html
-https://seu-servico.onrender.com/terms.html
-https://seu-servico.onrender.com/contact.html
-```
+O plano gratuito "dorme" após uns 15 minutos sem uso. Ao abrir o site, o `app.js` já manda um ping para acordar o servidor e mostra o status ("Acordando o servidor…" → "Servidor online"). A primeira conversão depois disso pode levar até um minuto.
 
-Ponto fraco: Render Free hiberna com inatividade e o primeiro acesso pode demorar.
+## Domínio próprio (opcional)
 
-## Caminho 2: melhor para producao barata
+Para usar um subdomínio (ex.: `epub.seudominio.com`):
 
-Use Cloudflare Pages para o front e um backend Docker pago barato para a API.
-
-Vantagens:
-
-- Front rapido e gratuito.
-- Backend separado pode escalar ou ser trocado depois.
-- Mais facil adicionar Cloudflare WAF, cache e dominio.
-
-Variavel importante no front quando separar:
-
-```javascript
-const API_BASE_URL = "https://api.seudominio.com";
-```
-
-Hoje o front usa `/api/convert` porque front e backend estao no mesmo servidor.
-
-## AdSense
-
-Antes de pedir revisao:
-
-- Substituir `SEU-DOMINIO.com` em `sitemap.xml` e `robots.txt`.
-- Trocar os textos placeholder das paginas `privacy.html` e `contact.html`.
-- Publicar com dominio real.
-- Garantir que `ads.txt` esteja acessivel em `/ads.txt`.
-- Criar conteudo original suficiente alem da ferramenta, por exemplo:
-  - Como converter PDF para EPUB
-  - Como enviar EPUB para Kindle
-  - Por que alguns PDFs nao convertem bem
-  - PDF escaneado vs PDF com texto selecionavel
-- Nao clicar nos proprios anuncios.
-
-Nao conte com anuncios aparecendo no primeiro dia. O site precisa passar por revisao, e a aprovacao depende de conteudo, navegacao, politicas e conformidade.
+1. Em **Settings → Pages → Custom domain**, informe o subdomínio e crie no DNS um `CNAME` apontando para `alex-m-silva.github.io`.
+2. Acrescente o novo endereço em `ALLOWED_ORIGINS` no Render.
+3. Atualize os links `canonical`, `sitemap.xml` e `robots.txt`.

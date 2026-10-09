@@ -1,0 +1,30 @@
+# Blueprint do Render: no painel, New → Blueprint → escolha este repositório.
+# Cria a API de conversão (FastAPI + Calibre) no plano gratuito, a partir do Dockerfile.
+services:
+  - type: web
+    name: pdf-para-epub
+    runtime: docker
+    plan: free
+    dockerfilePath: ./Dockerfile
+    healthCheckPath: /api/health
+    autoDeploy: true
+    envVars:
+      - key: MAX_UPLOAD_MB
+        value: "50"
+      - key: CONVERSION_TIMEOUT_SECONDS
+        value: "180"
+      - key: MAX_CONCURRENT_CONVERSIONS
+        value: "1"
+      - key: RATE_LIMIT_MAX_REQUESTS
+        value: "30"
+      - key: RATE_LIMIT_WINDOW_SECONDS
+        value: "60"
+      - key: TEMP_FILE_TTL_MINUTES
+        value: "30"
+      - key: SHOW_CONVERSION_ERRORS
+        value: "0"
+      # Hosts aceitos pela API e sites que podem chamá-la (o front no GitHub Pages)
+      - key: ALLOWED_HOSTS
+        value: "*.onrender.com,localhost,127.0.0.1"
+      - key: ALLOWED_ORIGINS
+        value: "https://alex-m-silva.github.io,http://localhost:8000,http://127.0.0.1:8000"

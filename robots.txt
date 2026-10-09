@@ -3,4 +3,4 @@ Allow: /
 
 Disallow: /api/
 
-Sitemap: https://SEU-DOMINIO.com/sitemap.xml
+Sitemap: https://alex-m-silva.github.io/pdf-para-epub/sitemap.xml

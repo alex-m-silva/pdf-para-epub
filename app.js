@@ -3,6 +3,10 @@ const dropzone = document.querySelector("#dropzone");
 const fileList = document.querySelector("#file-list");
 const convertButton = document.querySelector("#convert-button");
 const clearButton = document.querySelector("#clear-button");
+const apiStatus = document.querySelector("#api-status");
+
+// Definido em config.js: "" quando a API roda no mesmo servidor, ou a URL do Render
+const API_BASE_URL = window.API_BASE_URL || "";
 
 const maxFileSize = 50 * 1024 * 1024;
 const maxFiles = 5;
@@ -78,10 +82,18 @@ async function convertFile(file) {
   const formData = new FormData();
   formData.append("file", file);
 
-  const response = await fetch("/api/convert", {
-    method: "POST",
-    body: formData,
-  });
+  let response;
+
+  try {
+    response = await fetch(`${API_BASE_URL}/api/convert`, {
+      method: "POST",
+      body: formData,
+    });
+  } catch {
+    // Falha de rede: servidor fora do ar, dormindo ou sem internet
+    marcarServidor("offline");
+    throw new Error("Servidor indisponivel no momento. Tente de novo em instantes.");
+  }
 
   if (!response.ok) {
     let message = "Nao foi possivel converter este arquivo.";
@@ -125,7 +137,55 @@ dropzone.addEventListener("drop", (event) => {
 
 clearButton.addEventListener("click", () => {
   selectedFiles = [];
-  renderFiles();
+  /*
+ * Status do servidor de conversao.
+ * No plano gratuito do Render o servidor "dorme" sem uso e leva ate ~1 minuto para acordar.
+ * Ao abrir a pagina, ja mandamos um ping para ele ir acordando enquanto a pessoa escolhe o PDF.
+ */
+const TEXTOS_STATUS = {
+  verificando: "Conectando ao servidor…",
+  acordando: "Acordando o servidor…",
+  online: "Servidor online",
+  offline: "Servidor indisponivel",
+};
+
+function marcarServidor(estado) {
+  if (!apiStatus) {
+    return;
+  }
+
+  apiStatus.dataset.estado = estado;
+  apiStatus.textContent = TEXTOS_STATUS[estado];
+}
+
+async function acordarServidor() {
+  const inicio = Date.now();
+  const limiteMs = 90 * 1000;
+
+  while (Date.now() - inicio < limiteMs) {
+    try {
+      const controle = new AbortController();
+      const espera = setTimeout(() => controle.abort(), 15000);
+      const resposta = await fetch(`${API_BASE_URL}/api/health`, { signal: controle.signal, cache: "no-store" });
+      clearTimeout(espera);
+
+      if (resposta.ok) {
+        marcarServidor("online");
+        return;
+      }
+    } catch {
+      // ainda acordando: tenta de novo
+    }
+
+    marcarServidor("acordando");
+    await new Promise((resolve) => setTimeout(resolve, 5000));
+  }
+
+  marcarServidor("offline");
+}
+
+renderFiles();
+acordarServidor();
 });
 
 convertButton.addEventListener("click", async () => {

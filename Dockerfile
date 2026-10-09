@@ -16,4 +16,5 @@ COPY . .
 
 EXPOSE 8000
 
-CMD ["uvicorn", "api:app", "--host", "0.0.0.0", "--port", "8000"]
+# O Render informa a porta em $PORT; localmente usa 8000
+CMD ["sh", "-c", "uvicorn api:app --host 0.0.0.0 --port ${PORT:-8000} --proxy-headers --forwarded-allow-ips=*"]

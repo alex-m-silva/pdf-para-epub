@@ -4,6 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>PDF para EPUB | Conversor online</title>
+    <link rel="canonical" href="https://alex-m-silva.github.io/pdf-para-epub/">
     <meta
       name="description"
       content="Converta PDF para EPUB e aprenda como ler melhor no Kindle, Kobo e aplicativos de leitura."
@@ -11,27 +12,24 @@
     <meta property="og:title" content="PDF para EPUB | Conversor online">
     <meta property="og:description" content="Converta PDF para EPUB direto pelo navegador.">
     <meta property="og:type" content="website">
-    <link rel="icon" type="image/png" href="/assets/favicon.png">
-    <link rel="apple-touch-icon" href="/assets/favicon.png">
-    <link rel="stylesheet" href="styles.css?v=20260704-2">
-      <meta name="google-adsense-account" content="ca-pub-1881075591513239">
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1881075591513239"
-      crossorigin="anonymous"></script>  </head>
+    <link rel="icon" type="image/png" href="assets/favicon.png">
+    <link rel="apple-touch-icon" href="assets/favicon.png">
+    <link rel="stylesheet" href="styles.css?v=20261008">
+  </head>
   <body>
     <header class="topbar">
-      <a class="brand" href="/" aria-label="EPUB Convert">
-        <img class="brand-logo" src="/assets/logo.png" alt="EPUB Convert">
+      <a class="brand" href="./" aria-label="EPUB Convert">
+        <img class="brand-logo" src="assets/logo.png" alt="EPUB Convert">
       </a>
       <nav class="nav" aria-label="Navegacao principal">
         <a href="#converter">Converter</a>
         <a href="#como-funciona">Como funciona</a>
-        <a href="/guias.html">Guias</a>
-        <a href="/privacy.html">Privacidade</a>
+        <a href="guias.html">Guias</a>
+        <a href="privacy.html">Privacidade</a>
       </nav>
     </header>
 
     <main>
-      <aside class="ad-slot ad-slot-wide" aria-label="Publicidade"></aside>
 
       <section class="converter-hero" id="converter">
         <aside class="panel panel-side">
@@ -61,7 +59,7 @@
               <p class="eyebrow">Conversao online</p>
               <h2 id="converter-title">Selecionar PDF</h2>
             </div>
-            <span class="status-pill">PDF para EPUB</span>
+            <span class="status-pill" id="api-status" data-estado="verificando" role="status">Conectando ao servidor…</span>
           </div>
 
           <label class="dropzone" id="dropzone" for="file-input">
@@ -84,8 +82,6 @@
             Converter para EPUB
           </button>
         </section>
-
-        <aside class="ad-slot ad-slot-tall" aria-label="Publicidade"></aside>
       </section>
 
       <section class="info-grid" id="como-funciona">
@@ -111,6 +107,9 @@
         <p>
           Os arquivos enviados sao usados para gerar o EPUB e devem ser removidos automaticamente apos o processamento.
         </p>
+        <p>
+          A conversao roda em um servidor gratuito que "dorme" quando fica sem uso. Se ele estiver acordando, a primeira conversao pode levar ate um minuto para comecar.
+        </p>
       </section>
 
       <section class="content-preview" aria-labelledby="guides-title">
@@ -119,17 +118,17 @@
           <h2 id="guides-title">Aprenda a preparar arquivos para e-readers</h2>
         </div>
         <div class="article-grid">
-          <a class="article-card" href="/como-converter-pdf-para-epub.html">
+          <a class="article-card" href="como-converter-pdf-para-epub.html">
             <span>Guia</span>
             <h3>Como converter PDF para EPUB</h3>
             <p>Entenda quando a conversao funciona bem e como evitar arquivos ruins.</p>
           </a>
-          <a class="article-card" href="/como-enviar-epub-para-kindle.html">
+          <a class="article-card" href="como-enviar-epub-para-kindle.html">
             <span>Kindle</span>
             <h3>Como enviar EPUB para Kindle</h3>
             <p>Veja os caminhos mais comuns para colocar o EPUB no seu dispositivo.</p>
           </a>
-          <a class="article-card" href="/por-que-pdf-nao-converte-bem.html">
+          <a class="article-card" href="por-que-pdf-nao-converte-bem.html">
             <span>Problemas</span>
             <h3>Por que alguns PDFs nao convertem bem?</h3>
             <p>PDF escaneado, layout em colunas e protecao podem afetar o resultado.</p>
@@ -141,13 +140,14 @@
     <footer class="footer">
       <span>PDF para EPUB</span>
       <span>
-        <a href="/privacy.html">Privacidade</a> ·
-        <a href="/terms.html">Termos</a> ·
-        <a href="/contact.html">Contato</a> ·
-        <a href="/guias.html">Guias</a>
+        <a href="privacy.html">Privacidade</a> ·
+        <a href="terms.html">Termos</a> ·
+        <a href="contact.html">Contato</a> ·
+        <a href="guias.html">Guias</a>
       </span>
     </footer>
 
-    <script src="app.js?v=20260704-2"></script>
+    <script src="config.js?v=20261008"></script>
+    <script src="app.js?v=20261008"></script>
   </body>
 </html>

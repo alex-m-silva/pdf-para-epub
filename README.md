@@ -1,66 +1,76 @@
 # PDF para EPUB
 
-Site para converter arquivos PDF em EPUB pelo navegador.
+Conversor online de **PDF para EPUB**, para ler livros e apostilas em Kindle, Kobo e aplicativos de leitura. Sem login: escolha o PDF, converta e baixe o EPUB.
+
+**Site:** https://alex-m-silva.github.io/pdf-para-epub/
+
+## Como funciona
+
+```
+Navegador (GitHub Pages)  ──PDF──▶  API FastAPI (Render, Docker)  ──▶  Calibre (ebook-convert)
+        ▲                                                                     │
+        └──────────────────────────────── EPUB ◀──────────────────────────────┘
+```
+
+- **Front-end:** HTML, CSS e JavaScript puros, publicados no GitHub Pages. Fila de arquivos, arrastar e soltar, e indicador de status do servidor.
+- **Back-end:** Python com FastAPI, empacotado em Docker com o Calibre instalado. Recebe o PDF, roda o `ebook-convert` e devolve o EPUB.
+- **Conteúdo:** guias sobre leitura digital (enviar EPUB para o Kindle, PDF escaneado vs. PDF com texto etc.).
+
+## Segurança e limites da API
+
+- Limite de tamanho do upload (verificado no `Content-Length` e durante o recebimento)
+- Rate limit por IP e limite de conversões simultâneas
+- Timeout na conversão e nova tentativa sem as opções heurísticas quando a primeira falha
+- Arquivos em pasta temporária com nome aleatório, apagados após a resposta e numa limpeza periódica
+- `TrustedHostMiddleware`, CORS restrito e cabeçalhos de segurança
 
 ## Estrutura
 
-- `index.html`: pagina principal do conversor.
-- `styles.css`: layout responsivo.
-- `app.js`: upload, fila e chamada da API.
-- `api.py`: backend FastAPI que roda `ebook-convert`.
-- `requirements.txt`: dependencias Python.
-- `Dockerfile`: imagem de publicacao com Python e Calibre.
-- `ROADMAP.md`: controle interno do projeto.
-- `privacy.html`, `terms.html`, `contact.html`: paginas basicas para publicacao e revisao de anuncios.
-- `ads.txt`: placeholder para o codigo do AdSense apos aprovacao.
-- `DEPLOYMENT.md`: guia de publicacao barata e preparacao para anuncios.
-- `MONETIZATION.md`: plano de renda passiva sem custo inicial.
-- `guias.html` e artigos: conteudo inicial para SEO.
+| Arquivo | O que é |
+|---|---|
+| `index.html`, `styles.css`, `app.js` | página do conversor |
+| `config.js` | endereço da API (local ou Render) |
+| `api.py` | API FastAPI que roda o Calibre |
+| `Dockerfile`, `requirements.txt` | imagem com Python e Calibre |
+| `render.yaml` | blueprint para publicar a API no Render |
+| `guias.html` e artigos | conteúdo sobre leitura digital |
+| `privacy.html`, `terms.html`, `contact.html` | páginas institucionais |
 
 ## Rodar localmente
 
-Instale as dependencias:
+Precisa do [Calibre](https://calibre-ebook.com/download) instalado (comando `ebook-convert` no PATH).
 
 ```bash
 pip install -r requirements.txt
-```
-
-Inicie a aplicacao:
-
-```bash
 uvicorn api:app --reload --host 127.0.0.1 --port 8000
 ```
 
-Abra:
+Abra http://127.0.0.1:8000. Localmente, as páginas e a API rodam no mesmo servidor.
 
-```text
-http://127.0.0.1:8000
+Ou com Docker:
+
+```bash
+docker build -t pdf-para-epub .
+docker run -p 8000:8000 pdf-para-epub
 ```
 
 ## API
 
-- `GET /api/health`: verifica se a API esta online.
-- `GET /api/version`: mostra a versao ativa do backend.
-- `POST /api/convert`: recebe `multipart/form-data` com o campo `file` e retorna um `.epub`.
+- `GET /api/health`: verifica se a API está online.
+- `GET /api/version`: versão ativa do back-end.
+- `POST /api/convert`: recebe `multipart/form-data` com o campo `file` e retorna o `.epub`.
 
-## Variaveis de ambiente
+## Variáveis de ambiente
 
-- `MAX_UPLOAD_MB`: limite de upload em MB.
-- `CONVERSION_TIMEOUT_SECONDS`: timeout do Calibre.
-- `MAX_CONCURRENT_CONVERSIONS`: conversoes simultaneas.
-- `RATE_LIMIT_MAX_REQUESTS`: limite por IP dentro da janela.
-- `RATE_LIMIT_WINDOW_SECONDS`: janela do rate limit.
-- `TEMP_FILE_TTL_MINUTES`: idade maxima para limpeza de diretorios temporarios antigos.
-- `ALLOWED_HOSTS`: hosts aceitos pelo backend.
-- `ALLOWED_ORIGINS`: origens CORS aceitas.
-- `SHOW_CONVERSION_ERRORS`: use `1` em desenvolvimento e `0` em producao.
+| Variável | Padrão | Uso |
+|---|---|---|
+| `MAX_UPLOAD_MB` | `50` | tamanho máximo do PDF |
+| `CONVERSION_TIMEOUT_SECONDS` | `180` | tempo máximo do Calibre |
+| `MAX_CONCURRENT_CONVERSIONS` | `2` | conversões ao mesmo tempo |
+| `RATE_LIMIT_MAX_REQUESTS` / `RATE_LIMIT_WINDOW_SECONDS` | `30` / `60` | limite por IP |
+| `TEMP_FILE_TTL_MINUTES` | `30` | idade máxima dos temporários |
+| `ALLOWED_HOSTS` | `127.0.0.1,localhost,*.onrender.com` | hosts aceitos |
+| `ALLOWED_ORIGINS` | `http://127.0.0.1:8000,http://localhost:8000` | origens CORS |
+| `SHOW_CONVERSION_ERRORS` | `1` | `1` mostra o erro do Calibre (dev); `0` em produção |
 
-## Conversao
-
-A API usa o Calibre:
-
-```bash
-ebook-convert entrada.pdf saida.epub --enable-heuristics --html-unwrap-factor 0.40 --page-breaks-before /
-```
-
-Para publicar, o backend precisa de um ambiente que suporte Docker ou instalacao do Calibre.
+Publicação: veja [`DEPLOYMENT.md`](DEPLOYMENT.md).

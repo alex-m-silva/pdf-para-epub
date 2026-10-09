@@ -241,8 +241,10 @@ h1 {
 .converter-hero {
   display: grid;
   gap: 24px;
-  grid-template-columns: minmax(220px, 0.7fr) minmax(320px, 1.4fr) minmax(180px, 0.48fr);
-  padding: 0 clamp(20px, 4vw, 64px) 58px;
+  grid-template-columns: minmax(220px, 0.75fr) minmax(320px, 1.4fr);
+  margin: 0 auto;
+  max-width: 1180px;
+  padding: clamp(28px, 5vw, 56px) clamp(20px, 4vw, 64px) 58px;
   scroll-margin-top: 104px;
 }
 
@@ -647,5 +649,38 @@ h1 {
 
   .file-list li {
     grid-template-columns: 1fr;
+  }
+}
+
+/* Status do servidor de conversao (ver acordarServidor em app.js) */
+.status-pill::before {
+  border-radius: 50%;
+  content: "";
+  display: inline-block;
+  height: 8px;
+  margin-right: 7px;
+  vertical-align: 1px;
+  width: 8px;
+  background: currentColor;
+}
+
+.status-pill[data-estado="verificando"],
+.status-pill[data-estado="acordando"] {
+  color: #8a6d1f;
+}
+
+.status-pill[data-estado="verificando"]::before,
+.status-pill[data-estado="acordando"]::before {
+  animation: piscar-status 1.2s ease-in-out infinite;
+}
+
+.status-pill[data-estado="offline"] {
+  background: #f6e3df;
+  color: #a2412f;
+}
+
+@keyframes piscar-status {
+  50% {
+    opacity: 0.25;
   }
 }
